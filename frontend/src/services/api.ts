@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig, AxiosResp
 import { ApiResponse, User, Service, Booking, PaymentIntent, Review } from '@/types';
 
 // Ensure the API URL is properly set
-const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+const baseURL = process.env.REACT_APP_API_URL || 'https://homefix-backend.onrender.com/api';
 console.log('API Base URL:', baseURL); // Debug log
 
 const api: AxiosInstance = axios.create({

@@ -16,7 +16,7 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://homefix.vercel.app'  // Replace with your actual Vercel domain
+    'https://homefix.vercel.app'  // Your Vercel frontend domain
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
