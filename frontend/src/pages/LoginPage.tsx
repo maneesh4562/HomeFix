@@ -36,7 +36,7 @@ const LoginPage: React.FC = () => {
     if (isAuthenticated && user) {
       // Redirect based on user role
       switch (user.role) {
-        case 'provider':
+        case 'service_provider':
           navigate('/provider/dashboard');
           break;
         case 'admin':

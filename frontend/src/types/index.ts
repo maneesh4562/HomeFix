@@ -1,10 +1,11 @@
 export interface User {
   _id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  phone?: string;
+  phoneNumber?: string;
   address?: string;
-  role: 'homeowner' | 'provider' | 'admin';
+  role: 'homeowner' | 'service_provider' | 'admin';
   createdAt: string;
   updatedAt: string;
 }

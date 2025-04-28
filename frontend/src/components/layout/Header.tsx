@@ -137,7 +137,7 @@ const Header: React.FC = () => {
               color="inherit"
             >
               <Avatar sx={{ width: 32, height: 32 }}>
-                {user?.name?.charAt(0)}
+                {user?.firstName?.charAt(0)}
               </Avatar>
             </IconButton>
             <Menu

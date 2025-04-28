@@ -84,7 +84,7 @@ export const auth = {
     }
   },
   register: async (data: Partial<User> & { password: string }) => {
-    const response = await api.post<ApiResponse<{ token: string; user: User }>>('/auth/register', data);
+    const response = await api.post<{ user: User; token: string }>('/auth/register', data);
     return response.data;
   },
   getProfile: async () => {

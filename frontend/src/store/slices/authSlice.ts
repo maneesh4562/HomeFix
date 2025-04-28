@@ -96,11 +96,11 @@ export const register = createAsyncThunk(
   async (userData: Partial<User> & { password: string }, { rejectWithValue }) => {
     try {
       const response = await auth.register(userData);
-      if (!response.data?.token || !response.data?.user) {
+      if (!response.user || !response.token) {
         throw new Error('Invalid response from server');
       }
-      localStorage.setItem('token', response.data.token);
-      return response.data as AuthResponse;
+      localStorage.setItem('token', response.token);
+      return response as AuthResponse;
     } catch (error: any) {
       if (error.response) {
         return rejectWithValue(error.response.data.message || 'Registration failed');
@@ -147,12 +147,12 @@ export const updateUser = createAsyncThunk(
   async (userData: Partial<User>, { rejectWithValue }) => {
     try {
       console.log('Updating user with:', userData);
-      const user = await auth.updateProfile(userData);
-      if (!user) {
+      const response = await auth.updateProfile(userData);
+      console.log('Update response:', response);
+      if (!response) {
         throw new Error('Invalid response from server');
       }
-      console.log('User updated successfully:', user);
-      return user;
+      return response;
     } catch (error: any) {
       console.error('Update user error:', error);
       

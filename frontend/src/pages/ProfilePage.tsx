@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
-import { updateUser } from '../store/slices/authSlice';
+import { updateUser, getProfile } from '../store/slices/authSlice';
 import {
   Container,
   Paper,
@@ -10,51 +10,75 @@ import {
   Box,
   Grid,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { User } from '../types';
 
 const validationSchema = yup.object({
-  name: yup.string().required('Name is required'),
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
   email: yup.string().email('Invalid email').required('Email is required'),
-  phone: yup.string().matches(/^[0-9]{10}$/, 'Phone number must be 10 digits'),
+  phoneNumber: yup.string().matches(/^[0-9]{10}$/, 'Phone number must be 10 digits'),
   address: yup.string().required('Address is required'),
 });
 
 const ProfilePage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, loading, error: authError } = useAppSelector((state) => state.auth);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const formik = useFormik({
+  useEffect(() => {
+    if (!user) {
+      dispatch(getProfile());
+    }
+  }, [dispatch, user]);
+
+  const formik = useFormik<Partial<User>>({
     initialValues: {
-      name: user?.name || '',
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
       email: user?.email || '',
-      phone: user?.phone || '',
+      phoneNumber: user?.phoneNumber || '',
       address: user?.address || '',
     },
+    enableReinitialize: true,
     validationSchema,
     onSubmit: async (values) => {
       try {
         setError(null);
-        await dispatch(updateUser(values)).unwrap();
-        setSuccess(true);
+        setSuccess(false);
+        const result = await dispatch(updateUser(values)).unwrap();
+        if (result) {
+          setSuccess(true);
+          // Refresh the profile data
+          await dispatch(getProfile());
+        }
       } catch (err: any) {
         setError(err.message || 'Failed to update profile');
       }
     },
   });
 
+  if (loading && !user) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Container maxWidth="md">
       <Paper sx={{ p: 4, mt: 4 }}>
         <Typography variant="h4" gutterBottom>
-          Profile Settings
+          Profile
         </Typography>
-        {error && (
+        {(error || authError) && (
           <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
+            {error || authError}
           </Alert>
         )}
         {success && (
@@ -62,17 +86,32 @@ const ProfilePage: React.FC = () => {
             Profile updated successfully!
           </Alert>
         )}
-        <Box component="form" onSubmit={formik.handleSubmit}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
+        <Box component="form" onSubmit={formik.handleSubmit} noValidate>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Name"
-                name="name"
-                value={formik.values.name}
+                label="First Name"
+                name="firstName"
+                value={formik.values.firstName}
                 onChange={formik.handleChange}
-                error={formik.touched.name && Boolean(formik.errors.name)}
-                helperText={formik.touched.name && formik.errors.name}
+                onBlur={formik.handleBlur}
+                error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                helperText={formik.touched.firstName && formik.errors.firstName}
+                disabled={loading}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Last Name"
+                name="lastName"
+                value={formik.values.lastName}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                helperText={formik.touched.lastName && formik.errors.lastName}
+                disabled={loading}
               />
             </Grid>
             <Grid item xs={12}>
@@ -80,21 +119,26 @@ const ProfilePage: React.FC = () => {
                 fullWidth
                 label="Email"
                 name="email"
+                type="email"
                 value={formik.values.email}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
+                disabled={loading}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Phone"
-                name="phone"
-                value={formik.values.phone}
+                label="Phone Number"
+                name="phoneNumber"
+                value={formik.values.phoneNumber}
                 onChange={formik.handleChange}
-                error={formik.touched.phone && Boolean(formik.errors.phone)}
-                helperText={formik.touched.phone && formik.errors.phone}
+                onBlur={formik.handleBlur}
+                error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+                helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+                disabled={loading}
               />
             </Grid>
             <Grid item xs={12}>
@@ -104,21 +148,24 @@ const ProfilePage: React.FC = () => {
                 name="address"
                 value={formik.values.address}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 error={formik.touched.address && Boolean(formik.errors.address)}
                 helperText={formik.touched.address && formik.errors.address}
+                disabled={loading}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                size="large"
-                disabled={formik.isSubmitting}
-              >
-                Update Profile
-              </Button>
-            </Grid>
           </Grid>
+          <Box sx={{ mt: 3 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading || !formik.dirty}
+              fullWidth
+            >
+              {loading ? <CircularProgress size={24} /> : 'Update Profile'}
+            </Button>
+          </Box>
         </Box>
       </Paper>
     </Container>
