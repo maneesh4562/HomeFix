@@ -14,8 +14,6 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { User } from '../types';
-
 const validationSchema = yup.object({
   firstName: yup.string().required('First name is required'),
   lastName: yup.string().required('Last name is required'),
@@ -36,28 +34,22 @@ const ProfilePage: React.FC = () => {
     }
   }, [dispatch, user]);
 
-  const formik = useFormik<Partial<User>>({
+  const formik = useFormik({
     initialValues: {
       firstName: user?.firstName || '',
       lastName: user?.lastName || '',
       email: user?.email || '',
       phoneNumber: user?.phoneNumber || '',
       address: user?.address || '',
+      role: user?.role || 'homeowner',
     },
-    enableReinitialize: true,
     validationSchema,
     onSubmit: async (values) => {
       try {
-        setError(null);
-        setSuccess(false);
-        const result = await dispatch(updateUser(values)).unwrap();
-        if (result) {
-          setSuccess(true);
-          // Refresh the profile data
-          await dispatch(getProfile());
-        }
-      } catch (err: any) {
-        setError(err.message || 'Failed to update profile');
+        await dispatch(updateUser(values)).unwrap();
+        setSuccess(true);
+      } catch (error: any) {
+        setError(error.message || 'Failed to update profile');
       }
     },
   });
@@ -119,13 +111,21 @@ const ProfilePage: React.FC = () => {
                 fullWidth
                 label="Email"
                 name="email"
-                type="email"
                 value={formik.values.email}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
-                disabled={loading}
+                disabled
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                fullWidth
+                label="Role"
+                name="role"
+                value={formik.values.role}
+                disabled
+                sx={{ mb: 2 }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -138,7 +138,7 @@ const ProfilePage: React.FC = () => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
                 helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                disabled={loading}
+                sx={{ mb: 2 }}
               />
             </Grid>
             <Grid item xs={12}>

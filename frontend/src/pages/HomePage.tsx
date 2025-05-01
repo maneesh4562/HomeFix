@@ -10,21 +10,15 @@ import {
   CardContent,
   CardMedia,
   CardActions,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
 import {
-  Build,
   LocalPhone,
-  Star,
   CheckCircle,
   Security,
   Speed,
 } from '@mui/icons-material';
 
 const HomePage: React.FC = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
 
   const features = [

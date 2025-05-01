@@ -115,6 +115,7 @@ export const auth = {
 export const services = {
   getAll: async (filters?: Record<string, any>) => {
     const response = await api.get<ApiResponse<Service[]>>('/services', { params: filters });
+    console.log('Raw API response:', response); // Debug log
     return response.data;
   },
   getById: async (id: string) => {

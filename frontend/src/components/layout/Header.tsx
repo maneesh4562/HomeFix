@@ -26,6 +26,7 @@ import {
   Dashboard,
   Person,
   ExitToApp,
+  Info,
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { logout } from '../../store/slices/authSlice';
@@ -61,6 +62,7 @@ const Header: React.FC = () => {
     { label: 'Home', path: '/', icon: <Home /> },
     { label: 'Services', path: '/services', icon: <Build /> },
     { label: 'Emergency', path: '/emergency', icon: <LocalPhone /> },
+    { label: 'About Us', path: '/about', icon: <Info /> },
   ];
 
   if (isAuthenticated) {

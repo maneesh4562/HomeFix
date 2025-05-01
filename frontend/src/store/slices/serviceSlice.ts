@@ -21,12 +21,14 @@ export const getServices = createAsyncThunk(
   async (filters?: Record<string, any>, { rejectWithValue }: any = { rejectWithValue: () => {} }) => {
     try {
       const response = await services.getAll(filters);
-      if (!response.data) {
-        throw new Error('No services data received');
+      console.log('Services response:', response); // Debug log
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to fetch services');
       }
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.error || 'Failed to fetch services');
+      console.error('Error fetching services:', error); // Debug log
+      return rejectWithValue(error.message || 'Failed to fetch services');
     }
   }
 );

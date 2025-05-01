@@ -16,22 +16,21 @@ export interface Service {
   description: string;
   category: string;
   basePrice: number;
-  image?: string;
+  images?: string[];
   rating?: number;
   reviews?: Review[];
   isEmergency?: boolean;
   provider: {
     _id: string;
-    name: string;
-    email: string;
-    phone?: string;
-    firstName?: string;
-    lastName?: string;
+    firstName: string;
+    lastName: string;
   };
   availability: {
-    startTime: string;
-    endTime: string;
     days: string[];
+    hours: {
+      start: string;
+      end: string;
+    };
   };
   createdAt: string;
   updatedAt: string;

@@ -21,6 +21,7 @@ import EmergencyServicesPage from './pages/EmergencyServicesPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
+import AboutUsPage from './pages/AboutUsPage';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -43,6 +44,7 @@ const App: React.FC = () => {
             <Route path="/services" element={<ServiceListPage />} />
             <Route path="/services/:id" element={<ServiceDetailPage />} />
             <Route path="/emergency" element={<EmergencyServicesPage />} />
+            <Route path="/about" element={<AboutUsPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             

@@ -140,11 +140,11 @@ const ServiceListPage: React.FC = () => {
         {filteredServices.map((service: Service) => (
           <Grid item xs={12} sm={6} md={4} key={service._id}>
             <Card>
-              {service.image && (
+              {service.images && service.images.length > 0 && (
                 <CardMedia
                   component="img"
                   height="200"
-                  image={service.image}
+                  image={service.images[0]}
                   alt={service.name}
                 />
               )}
