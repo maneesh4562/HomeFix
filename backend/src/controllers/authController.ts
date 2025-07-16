@@ -56,6 +56,7 @@ export const register = async (req: Request, res: Response) => {
       token,
     });
   } catch (error: any) {
+    console.error(error); 
     if (error instanceof MongooseError.ValidationError) {
       const errors = Object.values(error.errors).map((err: any) => err.message);
       return res.status(400).json({ message: errors.join(', ') });

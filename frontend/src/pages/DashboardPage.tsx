@@ -5,7 +5,7 @@ import { CircularProgress, Typography, Box, Paper, List, ListItem, ListItemText,
 
 const DashboardPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { bookings, loading, error } = useAppSelector((state:any) => state.booking);
+  const { bookings, loading, error } = useAppSelector((state:any) => state.bookings);
   const { user } = useAppSelector((state:any) => state.auth);
 
   useEffect(() => {

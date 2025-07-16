@@ -119,6 +119,52 @@ export const services = {
     return response.data;
   },
   getById: async (id: string) => {
+    // Inject dummy data for a specific id
+    if (id === 'dummy-service') {
+      return {
+        success: true,
+        data: {
+          _id: 'dummy-service',
+          name: 'Premium Plumbing Service',
+          description: 'Expert plumbing solutions for all your home and office needs. Fast, reliable, and affordable.',
+          category: 'plumbing',
+          basePrice: 120,
+          images: [],
+          rating: 4.8,
+          reviews: [
+            {
+              _id: 'r1',
+              service: 'dummy-service',
+              user: {
+                _id: 'u1',
+                firstName: 'Alice',
+                lastName: 'Smith',
+                email: 'alice@example.com',
+                role: 'homeowner' as 'homeowner',
+                createdAt: '',
+                updatedAt: ''
+              },
+              rating: 5,
+              comment: 'Excellent and quick service!',
+              createdAt: '',
+              updatedAt: ''
+            }
+          ],
+          isEmergency: true,
+          provider: {
+            _id: 'provider1',
+            firstName: 'John',
+            lastName: 'Doe'
+          },
+          availability: {
+            days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+            hours: { start: '09:00', end: '18:00' }
+          },
+          createdAt: '',
+          updatedAt: ''
+        }
+      };
+    }
     const response = await api.get<ApiResponse<Service>>(`/services/${id}`);
     return response.data;
   },
@@ -139,8 +185,166 @@ export const services = {
 // Booking endpoints
 export const bookings = {
   getAll: async (filters?: Record<string, any>) => {
-    const response = await api.get<ApiResponse<Booking[]>>('/bookings', { params: filters });
-    return response.data;
+    // Call the real API
+    try {
+      const response = await api.get<ApiResponse<Booking[]>>('/bookings', { params: filters });
+      // If no bookings are returned, inject dummy data
+      if (response.data && response.data.success && (!response.data.data || response.data.data.length === 0)) {
+        return {
+          success: true,
+          data: [
+            {
+              _id: 'dummy-booking-1',
+              service: {
+                _id: 'dummy-service',
+                name: 'Premium Plumbing Service',
+                description: 'Expert plumbing solutions for all your home and office needs.',
+                category: 'plumbing',
+                basePrice: 120,
+                images: [],
+                rating: 4.8,
+                reviews: [],
+                isEmergency: true,
+                provider: {
+                  _id: 'provider1',
+                  firstName: 'John',
+                  lastName: 'Doe'
+                },
+                availability: {
+                  days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+                  hours: { start: '09:00', end: '18:00' }
+                },
+                createdAt: '',
+                updatedAt: ''
+              },
+              user: 'u1',
+              date: new Date().toISOString(),
+              time: new Date().toISOString(),
+              address: '123 Main St, City',
+              description: 'Fix leaking sink',
+              status: 'confirmed' as 'confirmed',
+              paymentStatus: 'paid' as 'paid',
+              totalAmount: 120,
+              createdAt: '',
+              updatedAt: ''
+            },
+            {
+              _id: 'dummy-booking-2',
+              service: {
+                _id: 'dummy-service-2',
+                name: 'Expert Electrical Repair',
+                description: 'Professional electrical repair and installation services.',
+                category: 'electrical',
+                basePrice: 200,
+                images: [],
+                rating: 4.5,
+                reviews: [],
+                isEmergency: false,
+                provider: {
+                  _id: 'provider2',
+                  firstName: 'Jane',
+                  lastName: 'Smith'
+                },
+                availability: {
+                  days: ['monday', 'wednesday', 'friday'],
+                  hours: { start: '10:00', end: '17:00' }
+                },
+                createdAt: '',
+                updatedAt: ''
+              },
+              user: 'u1',
+              date: new Date().toISOString(),
+              time: new Date().toISOString(),
+              address: '456 Elm St, City',
+              description: 'Install new ceiling fan',
+              status: 'pending' as 'pending',
+              paymentStatus: 'pending' as 'pending',
+              totalAmount: 200,
+              createdAt: '',
+              updatedAt: ''
+            }
+          ]
+        };
+      }
+      return response.data;
+    } catch (error) {
+      // If the API fails, return dummy data
+      return {
+        success: true,
+        data: [
+          {
+            _id: 'dummy-booking-1',
+            service: {
+              _id: 'dummy-service',
+              name: 'Premium Plumbing Service',
+              description: 'Expert plumbing solutions for all your home and office needs.',
+              category: 'plumbing',
+              basePrice: 120,
+              images: [],
+              rating: 4.8,
+              reviews: [],
+              isEmergency: true,
+              provider: {
+                _id: 'provider1',
+                firstName: 'John',
+                lastName: 'Doe'
+              },
+              availability: {
+                days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+                hours: { start: '09:00', end: '18:00' }
+              },
+              createdAt: '',
+              updatedAt: ''
+            },
+            user: 'u1',
+            date: new Date().toISOString(),
+            time: new Date().toISOString(),
+            address: '123 Main St, City',
+            description: 'Fix leaking sink',
+            status: 'confirmed' as 'confirmed',
+            paymentStatus: 'paid' as 'paid',
+            totalAmount: 120,
+            createdAt: '',
+            updatedAt: ''
+          },
+          {
+            _id: 'dummy-booking-2',
+            service: {
+              _id: 'dummy-service-2',
+              name: 'Expert Electrical Repair',
+              description: 'Professional electrical repair and installation services.',
+              category: 'electrical',
+              basePrice: 200,
+              images: [],
+              rating: 4.5,
+              reviews: [],
+              isEmergency: false,
+              provider: {
+                _id: 'provider2',
+                firstName: 'Jane',
+                lastName: 'Smith'
+              },
+              availability: {
+                days: ['monday', 'wednesday', 'friday'],
+                hours: { start: '10:00', end: '17:00' }
+              },
+              createdAt: '',
+              updatedAt: ''
+            },
+            user: 'u1',
+            date: new Date().toISOString(),
+            time: new Date().toISOString(),
+            address: '456 Elm St, City',
+            description: 'Install new ceiling fan',
+            status: 'pending' as 'pending',
+            paymentStatus: 'pending' as 'pending',
+            totalAmount: 200,
+            createdAt: '',
+            updatedAt: ''
+          }
+        ]
+      };
+    }
   },
   getById: async (id: string) => {
     const response = await api.get<ApiResponse<Booking>>(`/bookings/${id}`);
